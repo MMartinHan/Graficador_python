@@ -1,104 +1,29 @@
-import tkinter 
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib import style
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 import numpy as np
-from tkinter import messagebox
-from math import *
-from tkinter import*
+import matplotlib.pyplot as plt
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+u = np.linspace(0, 10, 100)
+v = np.linspace(-2 * np.pi, 2 * np.pi, 100)
 
-root = tkinter.Tk()
-root.wm_title("Graficador")
-ta=root.geometry("1000x700")
+funcion_x = "10*np.outer(np.sqrt(u), np.cos(v))"
+funcion_y = "5*np.outer(np.sqrt(u), np.sin(v))"
+funcion_z = "np.outer(np.ones(np.size(u)), u)"
+r=2
+def parametroX(funcion_x):
+    x = eval(funcion_x)
+    return x
 
-style.use('fivethirtyeight')
+def parametroY(funcion_y):
+    y = eval(funcion_y)
+    return y
 
-fig = Figure()
-ax1 = fig.add_subplot(111)
+def parametroZ(funcion_z):
+    z = eval(funcion_z)
+    return z
 
-canvas = FigureCanvasTkAgg(fig, master=root)  # CREAR AREA DE DIBUJO DE TKINTER.
-canvas.draw()
-canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+x= parametroX(funcion_x)
+y= parametroY(funcion_y)
+z= parametroZ(funcion_z)
 
-toolbar = NavigationToolbar2Tk(canvas, root)# barra de iconos
-toolbar.update()
-canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
-
-act_rango=False
-ul_ran=""
-ran=""
-
-funciones={"sin":"np.sin","cos":"np.cos","tan":"np.tan","log":"np.log","pi":"np.pi","sqrt":"np.sqrt","exp":"np.exp"}
-
-def reemplazo(s):
-    for i in funciones:
-        if i in s:
-            s=s.replace(i, funciones[i])
-    return s
-
-def animate(i):
-    global act_rango
-    global ul_ran
-    if act_rango==True:
-        try:
-            lmin = float(ran[0]); lmax = float(ran[1])
-            if lmin < lmax:
-                x = np.arange(lmin, lmax, .01)#.01
-                ul_ran = [lmin, lmax]
-            else:
-                act_rango = False
-        except:
-            messagebox.showwarning("Error","Introduzca los valores del rango de x, separado por coma.")
-            act_rango=False
-            ets.delete(0,len(ets.get()))
-    else:
-        if ul_ran!="":
-            x = np.arange(ul_ran[0],ul_ran[1], .01)#.01
-        else:
-            x = np.arange(1, 10, .01)#.01
-    try:
-        solo=eval(graph_data)
-        ax1.clear()
-        ax1.plot(x,solo)
-    except:
-        ax1.plot()
-    ax1.axhline(0, color="gray")
-    ax1.axvline(0, color="gray")
-    ani.event_source.stop() #DETIENE ANIMACIÓN
-
-def represent():
-    global graph_data
-    global ran
-    global act_rango
-    texto_orig=et.get()
-    if ets.get()!="":
-        rann=ets.get()
-        ran=rann.split(",")
-        act_rango=True
-    
-    graph_data=reemplazo(texto_orig)
-    ani.event_source.start() #INICIA/REANUDA ANIMACIÓN
-    
-ani = animation.FuncAnimation(fig, animate, interval=100)
-
+ax.plot_surface(x, y, z, rstride=4, cstride=4, color='b')
 plt.show()
-
-et = tkinter.Entry(master=root,width=60)
-et.config(bg="gray87", justify="left")
-
-button = tkinter.Button(master=root, text="SET", bg="gray69", command=represent)
-button.pack(side=tkinter.BOTTOM)
-
-et.pack(side=tkinter.BOTTOM)
-rango = Label(master=root, text = "Ingrese el rango:", fg = "black", font = 10)
-rango.place(x = 1100, y = 595)
-
-
-rango.config(bg = "gray87")
-ets=tkinter.Entry(master=root,width=20)
-ets.config(bg="gray87")
-ets.pack(side=tkinter.RIGHT)
-
-tkinter.mainloop()

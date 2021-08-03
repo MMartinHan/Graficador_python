@@ -1,5 +1,5 @@
 #from tkinter import *
-
+from numpy import sinh
 
 #Crear ventana
 #ventana = Tk()
